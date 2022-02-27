@@ -1,0 +1,127 @@
+create table klient(
+    id_klient integer,
+    ime_firma varchar(100) not null,
+    ulica varchar(100) not null,
+    broj varchar(10),
+    constraint pk_klient primary key (id_klient)
+);
+insert into klient(id_klient, ime_firma, ulica, broj) VALUES (1,'Lingua','Jane Sandanski','20'),
+                                                     (2,'Bella Vista','Treta Makedoska Brigada','15'),
+                                                     (3,'Tinex','Kliment Ohridski','10');
+create table obuka(
+    id_obuka integer,
+    opis varchar(100) not null,
+    datum_obuka timestamp not null default now(),
+    constraint pk_obuka primary key (id_obuka)
+);
+
+insert into obuka(id_obuka, opis, datum_obuka) VALUES (1,'Obuka za programiranje mobilni aplikacii','2021-11-25 09:00'),
+                                               (2,'Obuka za softver tester','2021-12-01 11:00');
+
+insert into obuka(id_obuka, opis) VALUES(3,'Obuka za rabota so ASP.NET');
+
+create table proekt(
+    id_proekt integer,
+    ime_proekt varchar(100) not null,
+    datum_pocetok date not null,
+    datum_kraj date not null,
+    id_klient integer not null,
+    constraint pk_proekt primary key (id_proekt),
+    constraint fk_proekt_klient foreign key (id_klient) references klient(id_klient)
+);
+insert into proekt(id_proekt, ime_proekt, datum_pocetok, datum_kraj, id_klient) VALUES (1,'Online ucenje', '2021-11-15', '2021-12-01', 1),
+                                                                                        (2, 'Naracki','2021-12-07', '2021-12-25', 2);
+
+create table chovek(
+    embg char(13),
+    ime varchar(100) not null,
+    prezime varchar(100) not null,
+    constraint pk_chovek primary key (embg),
+    constraint ck_embg check ( substr(embg,1,1) in ('0','1','2','3')
+        and substr(embg,3,2) in ('01','02','03','04','05','06','07','08','09','10','11','12'))
+);
+insert into chovek(embg, ime, prezime) VALUES ('0711000455890', 'Ana','Petrova'),
+                                              ('0505000455029', 'Marija','Janevska'),
+                                              ('0705998450076', 'Marko','Markovski'),
+                                              ('0506997455080', 'Marija','Markovska'),
+                                              ('0201998450009', 'Petar','Petrov');
+
+create table menadzer(
+    embg_menadzer char(13),
+    constraint pk_embg_menadzer primary key (embg_menadzer),
+    constraint fk_menadzer_chovek foreign key (embg_menadzer) references chovek(embg)
+);
+insert into menadzer(embg_menadzer) VALUES ('0201998450009'), ('0505000455029');
+
+create table oddel(
+    id_oddel integer,
+    ime_oddel varchar(100) not null,
+    embg_menadzer char(13) not null,
+    constraint pk_oddel primary key (id_oddel),
+    constraint fk_oddel_menadzer foreign key (embg_menadzer) references menadzer(embg_menadzer)
+);
+insert into oddel(id_oddel, ime_oddel, embg_menadzer) VALUES (1,'Chovecki resursi','0201998450009'),
+                                                             (2,'Razvoj na softver','0505000455029');
+
+create table developer(
+    embg_developer char(13),
+    id_oddel integer,
+    embg_menadzer char(13),
+    constraint pk_embg_developer primary key (embg_developer),
+    constraint fk_developer_oddel foreign key (id_oddel) references oddel(id_oddel),
+    constraint fk_developer_menadzer foreign key (embg_menadzer) references menadzer(embg_menadzer)
+);
+insert into developer(embg_developer) VALUES ('0711000455890');
+insert into developer(embg_developer, id_oddel, embg_menadzer) VALUES ('0705998450076', 2, '0505000455029'),
+                                                       ('0506997455080', 2,'0505000455029');
+
+create table telefonski_broj(
+    id_klient integer,
+    telefonski_broj varchar(30),
+    constraint pk_telefonski_broj primary key(id_klient,telefonski_broj),
+    constraint fk_telefonski_broj_klient foreign key (id_klient) references klient(id_klient),
+    constraint ck_telefonski_broj check(telefonski_broj not like '%[^0-9]%')
+);
+insert into telefonski_broj(id_klient, telefonski_broj) VALUES (1,'+38922450450'),
+                                                               (1,'+38972332007'),
+                                                               (2, '072261505');
+create table email(
+    id_klient integer,
+    email varchar(50),
+    constraint pk_email primary key(id_klient,email),
+    constraint fk_email_klient foreign key (id_klient) references klient(id_klient),
+    constraint ck_email check (email like '%_@__%.__%')
+);
+
+insert into email(id_klient, email) VALUES(1,'info@lingua.mk'),
+                                          (1,'teacherAna@lingua.mk'),
+                                          (2,'bellavista@gmail.com');
+
+create table menadzer_organizira_obuka(
+    embg_menadzer char(13),
+    id_obuka integer,
+    constraint pk_menadzer_organizira_obuka primary key (embg_menadzer, id_obuka),
+    constraint fk_menadzer_organizira_obuka_menadzer foreign key (embg_menadzer) references menadzer(embg_menadzer),
+    constraint fk_menadzer_organizira_obuka_obuka foreign key (id_obuka) references obuka(id_obuka)
+);
+insert into menadzer_organizira_obuka(embg_menadzer, id_obuka) VALUES ('0201998450009',1);
+
+create table developer_raboti_na_proekt(
+  embg_developer char(13),
+  id_proekt integer,
+  raboti_od date not null,
+  raboti_do date,
+  constraint pk_developer_raboti_na_proekt primary key (embg_developer,id_proekt),
+  constraint fk_developer_raboti_na_proekt_developer foreign key (embg_developer) references developer(embg_developer),
+  constraint fk_developer_raboti_na_proekt_proekt foreign key (id_proekt) references proekt(id_proekt)
+);
+insert into developer_raboti_na_proekt(embg_developer, id_proekt, raboti_od, raboti_do) VALUES ('0711000455890',1,'2021-11-15','2021-12-01');
+
+create table developer_prisustvuva_na_obuka(
+     embg_developer char(13),
+     id_obuka integer,
+     constraint pk_developer_prisustvuva_na_obuka primary key (embg_developer, id_obuka),
+     constraint fk_developer_prisustvuva_na_obuka_developer foreign key(embg_developer) references developer(embg_developer),
+     constraint fk_developer_prisustvuva_na_obuka_obuka foreign key (id_obuka) references obuka(id_obuka)
+);
+insert into developer_prisustvuva_na_obuka(embg_developer, id_obuka) VALUES ('0711000455890',1);
