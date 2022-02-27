@@ -1,0 +1,61 @@
+//    @PostMapping("/add")
+//    //ova e za proekt vo tabela PROEKT!
+//    public String saveProject(@RequestParam String ime_proekt,
+//                              @RequestParam  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate datum_pocetok,
+//                              @RequestParam  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate datum_kraj,
+//                              @RequestParam Integer clientList){
+//        this.proektService.save(ime_proekt, datum_pocetok, datum_kraj, clientList);
+//        return "redirect:/projects";
+//    }
+
+
+   @GetMapping("/add-form")
+//    public String addProjectPage(Model model) {
+//        List<Klient> clientList=this.klientService.listAll();
+//        model.addAttribute("clientList", clientList);
+//        return "add-project";
+//    }
+
+
+//    @PostMapping("/edit")
+//    //ova e za PROMENA u  Developer_raboti_na_proekt  klasata
+//    //sakas da go zemes dadeniot developer i da popolnis za nego deka raboti
+//    public String editProject(@RequestParam String embg_developer,
+//                              @RequestParam Integer id_proekt,
+//                              @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate raboti_od,
+//                              @RequestParam(required = false)  @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate raboti_do){
+//
+//        this.developerRabotiProektService.save(embg_developer, id_proekt,raboti_od,raboti_do);
+//        return "redirect:/projects";
+//    }
+
+
+ private final ProektService proektService;//za ADD PROJECT sho ke se prikaze vo baza
+
+
+OVA ZA PROEKTI VIEW-TO GRESNOOO NE TI TREBA
+
+//    @Override
+//    public Optional<Proekti> findById(Integer id) {
+//        return this.proektiRepository.findById(id);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public Optional<Proekti> save(Integer id_proekt, String ime_proekt, LocalDate datum_pocetok, LocalDate datum_kraj, String embg,
+//                                  String ime_developer, String prezime_developer, LocalDate raboti_od, LocalDate raboti_do) {
+//        this.proektiRepository.deleteByName(ime_proekt);//za edit se povikuva,
+//        // za add ne
+//        Proekti proekti = new Proekti(id_proekt, ime_proekt, datum_pocetok, datum_kraj,
+//                embg, ime_developer, prezime_developer, raboti_od, raboti_do);
+//        return Optional.of(this.proektiRepository.save(proekti));
+//    }
+
+//    private Developer developer;
+//    private Proekt proekt;
+//
+//    @Id
+//    private String  embg_developer;
+//
+//    @Id
+//    private Integer id_proekt;
